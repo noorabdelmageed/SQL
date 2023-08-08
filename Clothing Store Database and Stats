@@ -1,0 +1,34 @@
+--Create a clothing store database
+
+CREATE TABLE clothing_store (id INTEGER PRIMARY KEY, item TEXT, colour TEXT, price INTEGER, popularity INTEGER);
+
+INSERT INTO clothing_store VALUES (1, "t-shirt 1", "red", 15, 6);
+INSERT INTO clothing_store VALUES (2, "t-shirt 2", "green", 15, 7);
+INSERT INTO clothing_store VALUES (3, "t-shirt 3", "pink", 15, 10);
+INSERT INTO clothing_store VALUES (4, "t-shirt 4", "yellow", 15, 5);
+INSERT INTO clothing_store VALUES (5, "t-shirt 5", "blue", 15, 4);
+INSERT INTO clothing_store VALUES (6, "short 1", "brown", 20, 8);
+INSERT INTO clothing_store VALUES (7, "short 2", "black", 20, 2);
+INSERT INTO clothing_store VALUES (8, "short 3", "green", 20, 9);
+INSERT INTO clothing_store VALUES (9, "skirt 1", "black", 20, 1);
+INSERT INTO clothing_store VALUES (10, "skirt 2", "brown", 20, 3);
+INSERT INTO clothing_store VALUES (11, "pants 1", "brown", 30, 11);
+INSERT INTO clothing_store VALUES (12, "pants 2", "blue", 30, 12);
+INSERT INTO clothing_store VALUES (13, "pants 3", "black", 30, 13);
+INSERT INTO clothing_store VALUES (14, "sweater 1", "red", 35, 14);
+INSERT INTO clothing_store VALUES (15, "sweater 2", "pink", 35, 15);
+
+--display the database ordered by price.
+SELECT * FROM clothing_store
+ORDER BY price asc;
+
+--what are the 5 most popular items?
+SELECT item, price, popularity
+FROM clothing_store
+ORDER BY popularity asc
+limit 5; 
+
+--what is the most expensive blue-coloured item of clothing?
+SELECT item, MAX(price) "max price, blue clothing"
+FROM clothing_store
+WHERE colour='blue';
