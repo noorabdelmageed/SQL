@@ -1,0 +1,125 @@
+--Create a table of famous people.
+CREATE TABLE artists
+    (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    genre TEXT,
+    number_of_LPs INTEGER,
+    number_of_EPs INTEGER,
+    number_of_singles INTEGER
+    );
+    
+INSERT INTO artists (name, genre, number_of_LPs, number_of_EPs, number_of_singles) VALUES ("Mitski", "Alternative", 6, 3, 17);
+INSERT INTO artists (name, genre, number_of_LPs, number_of_EPs, number_of_singles) VALUES ("Rina Sawayama", "Alternative", 2, 2, 26);
+INSERT INTO artists (name, genre, number_of_LPs, number_of_EPs, number_of_singles) VALUES ("Lucy Dacus", "Indie Rock", 3, 3, 20);
+INSERT INTO artists (name, genre, number_of_LPs, number_of_EPs, number_of_singles) VALUES ("Hozier", "Indie Rock", 2, 7, 16);
+INSERT INTO artists (name, genre, number_of_LPs, number_of_EPs, number_of_singles) VALUES ("Kendrick Lamar", "Hip hop", 5, 1, 65);
+INSERT INTO artists (name, genre, number_of_LPs, number_of_EPs, number_of_singles) VALUES ("Nicki Minaj", "Hip hop", 4, 0, 134);
+
+
+--Create more tables with additional information on the famous people and what they do.
+CREATE TABLE genre
+    (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    number_of_singles INTEGER,
+    number_of_artists INTEGER
+    );
+
+INSERT INTO genre (name, number_of_singles, number_of_artists) VALUES ("Hip hop", 199, 2);
+INSERT INTO genre (name, number_of_singles, number_of_artists) VALUES ("Indie Rock", 36, 2);
+INSERT INTO genre (name, number_of_singles, number_of_artists) VALUES ("Alternative", 43, 2);
+
+CREATE TABLE location
+    (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    artist_name TEXT,
+    city TEXT,
+    country TEXT
+    );
+    
+INSERT INTO location (artist_name, city, country) VALUES ("Mitski", "Mie", "Japan");
+INSERT INTO location (artist_name, city, country) VALUES ("Rina Sawayama", "Niigata", "Japan");
+INSERT INTO location (artist_name, city, country) VALUES ("Hozier", "Bray", "Ireland");
+INSERT INTO location (artist_name, city, country) VALUES ("Lucy Dacus", "Mechanicsville", "United States");
+INSERT INTO location (artist_name, city, country) VALUES ("Nicki Minaj", "Port of Spain", "Trinidad and Tobago");
+INSERT INTO location (artist_name, city, country) VALUES ("Kendrick Lamar", "Compton", "United States");
+
+
+--Create a table with favourite songs and artists.
+CREATE TABLE top_songs
+    (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    song_name TEXT,
+    artist_name TEXT,
+    genre TEXT,
+    genre_id TEXT,
+    playtime TEXT,
+    rating INTEGER
+    );
+    
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Not", "Big Thief", "Indie Rock", 2, 367, 2); 
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id,  playtime, rating) VALUES ("Donuts Mind If I Do", "CHAI", "Alternative", 3, 228, 12);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Cool Dry Place", "Katy Kirby", "Indie Folk", 4, 301, 11);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Attention", "Doja Cat", "Hip hop", 1, 277, 7);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Francesca", "Hozier", "Indie Rock", 2, 277, 10);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Eat Your Young", "Hozier", "Indie Rock", 2, 242, 3);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("A.D.H.D.", "Kendrick Lamar", "Hip hop", 1, 216, 5);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Mirror", "Kendrick Lamar", "Hip hop", 1, 256, 6);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Class of 2013", "Mitski", "Alternative", 3, 109, 1);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Cattails", "Big Thief", "Indie Rock", 2, 246, 8);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Night Shift", "Lucy Dacus", "Indie Rock", 2, 391, 4);
+INSERT INTO top_songs (song_name, artist_name, genre, genre_id, playtime, rating) VALUES ("Body to Flame", "Lucy Dacus", "Indie Rock", 2, 186, 9);
+
+--Display your top songs and their genre using the genre_id. 
+SELECT
+    top_songs.song_name AS 'song_name',
+    genre.id AS 'genre_id',
+    genre.name AS 'genre_name'
+    FROM top_songs
+    JOIN genre
+    ON genre.id=top_songs.genre_id
+    ORDER BY genre.id ASC;
+    
+-Display the artist, the number of singles they've released, and the country they were born in.
+SELECT
+    artists.name AS 'artist',
+    artists.number_of_singles,
+    location.country
+    FROM artists
+    LEFT JOIN location
+    ON artists.name=location.artist_name
+    GROUP BY artists.name
+    ORDER BY location.country ASC;
+
+--Display the total number of LPs and EPs released per genre.   
+SELECT
+    genre.name AS 'genre',
+    SUM(artists.number_of_LPs) AS 'total_LPs',
+    SUM(artists.number_of_EPs) AS 'total_EPs'
+    FROM genre
+    LEFT JOIN artists
+    ON genre.name=artists.genre
+    GROUP BY genre.name
+    ORDER BY genre.name ASC;
+
+--Display the song name, the artist's name, and the artist's country of birth for your 'top songs'. Only include one song per artist and include artists even if tte country is unknown.
+SELECT
+    top_songs.song_name,
+    top_songs.artist_name,
+    location.country
+    FROM top_songs
+    LEFT JOIN location
+    ON top_songs.artist_name=location.artist_name
+    GROUP BY top_songs.artist_name
+    ORDER BY location.country DESC;
+
+--Display how many of your top songs belong to each genre in the 'genre' table.
+SELECT 
+     genre.name AS 'genre',
+     COUNT(top_songs.song_name) AS 'top_song_count'
+     FROM genre
+     JOIN top_songs
+     ON genre.name=top_songs.genre
+     GROUP BY genre.name
+     ORDER BY COUNT(top_songs.song_name) DESC;
+     
